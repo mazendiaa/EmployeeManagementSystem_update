@@ -1,0 +1,138 @@
+@model IEnumerable<EmployeeManagementSystem.Models.Employee>
+
+@{
+    ViewData["Title"] = "Employees";
+    int currentPage = ViewBag.Page;
+    int totalPages = ViewBag.TotalPages;
+}
+
+<section class="employees-page">
+    <div class="employees-heading">
+        <h1>Employees</h1>
+        <a asp-action="Create" class="btn btn-primary create-employee-button">Create Employee</a>
+    </div>
+
+    <form method="get" class="employee-filters">
+        <input type="hidden" name="page" value="1" />
+        <div class="filter-search">
+            <input name="searchText" value="@ViewBag.SearchText" class="form-control" placeholder="Search by name or email" aria-label="Search by name or email" />
+        </div>
+        <div class="filter-department">
+            <select name="departmentId" class="form-select" aria-label="Filter by department">
+                <option value="">All Departments</option>
+                @foreach (var department in ViewBag.Departments)
+                {
+                    if (department.Value == Convert.ToString(ViewBag.DepartmentId))
+                    {
+                        <option value="@department.Value" selected>@department.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@department.Value">@department.Text</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="filter-title">
+            <select name="jobTitleId" class="form-select" aria-label="Filter by job title">
+                <option value="">All Job Titles</option>
+                @foreach (var jobTitle in ViewBag.JobTitles)
+                {
+                    if (jobTitle.Value == Convert.ToString(ViewBag.JobTitleId))
+                    {
+                        <option value="@jobTitle.Value" selected>@jobTitle.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@jobTitle.Value">@jobTitle.Text</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="filter-submit">
+            <button type="submit" class="btn btn-secondary w-100">Search</button>
+        </div>
+    </form>
+
+    <div class="table-responsive employee-table-wrap">
+        <table class="table table-bordered table-striped align-middle employee-table">
+            <thead>
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Job Title</th>
+                    <th scope="col">Date Joined</th>
+                    <th scope="col">Salary</th>
+                    <th scope="col" class="employee-actions-heading"><span class="visually-hidden">Actions</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var employee in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(employee.ProfileImagePath))
+                            {
+                                <img src="@employee.ProfileImagePath" class="employee-thumb" alt="@employee.FullName" />
+                            }
+                            else
+                            {
+                                <span class="no-image-label">No image</span>
+                            }
+                        </td>
+                        <td class="employee-name">@employee.FullName</td>
+                        <td class="employee-email">@employee.Email</td>
+                        <td>@(employee.Department?.Name ?? "Pending HR assignment")</td>
+                        <td>@(employee.JobTitle?.Title ?? "Pending HR assignment")</td>
+                        <td>@(employee.HireDate?.ToString("MMM d, yyyy") ?? "Pending HR assignment")</td>
+                        <td class="employee-salary">@(employee.Salary?.ToString("C") ?? "Pending HR assignment")</td>
+                        <td>
+                            <div class="employee-row-actions">
+                                <a asp-action="Details" asp-route-id="@employee.Id" class="row-action" title="View @employee.FullName" aria-label="View @employee.FullName">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@employee.Id" class="row-action" title="Edit @employee.FullName" aria-label="Edit @employee.FullName">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16.5-.8 4.3 4.3-.8L19.8 7.7a2.4 2.4 0 0 0-3.4-3.4L4 16.5Z"/><path d="m14.8 5.9 3.3 3.3"/></svg>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@employee.Id" class="row-action row-action-delete" title="Delete @employee.FullName" aria-label="Delete @employee.FullName">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m3 0-.8 13H6.8L6 7m4 4v5m4-5v5"/></svg>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No employees found.</div>
+    }
+
+    <nav aria-label="Employee pages">
+        <ul class="pagination employee-pagination">
+            <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(currentPage - 1)"
+                   asp-route-searchText="@ViewBag.SearchText"
+                   asp-route-departmentId="@ViewBag.DepartmentId"
+                   asp-route-jobTitleId="@ViewBag.JobTitleId">Previous</a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">Page @currentPage of @(totalPages == 0 ? 1 : totalPages)</span>
+            </li>
+            <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(currentPage + 1)"
+                   asp-route-searchText="@ViewBag.SearchText"
+                   asp-route-departmentId="@ViewBag.DepartmentId"
+                   asp-route-jobTitleId="@ViewBag.JobTitleId">Next</a>
+            </li>
+        </ul>
+    </nav>
+</section>

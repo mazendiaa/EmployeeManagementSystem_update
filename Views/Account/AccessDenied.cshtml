@@ -1,0 +1,2 @@
+@{ ViewData["Title"] = "Access denied"; }
+<div class="surface-card denied-card"><span class="denied-icon">↗</span><span class="eyebrow">PRIVATE WORKSPACE</span><h1>You don't have access to this page.</h1><p>Your account is set up for a different workspace. If you think you need access, ask your HR administrator.</p><a asp-controller="@(User.IsInRole("HR") ? "Home" : "Portal")" asp-action="Index" class="btn btn-primary">Back to my workspace</a></div>

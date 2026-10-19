@@ -1,0 +1,11 @@
+@model IEnumerable<EmployeeManagementSystem.Models.JobTitle>
+@{ ViewData["Title"] = "Job titles"; }
+<section class="management-list">
+    <div class="employees-heading"><div><span class="eyebrow">PEOPLE DIRECTORY</span><h1>Job titles</h1><p class="page-subtitle">Keep roles and positions consistent across the team.</p></div><a asp-action="Create" class="btn btn-primary create-employee-button">＋ Add job title</a></div>
+    @if (TempData["Error"] is string error) { <div class="alert alert-warning">@error</div> }
+    @if (TempData["Success"] is string success) { <div class="alert alert-success">@success</div> }
+    <div class="table-responsive table-shell"><table class="table align-middle management-table"><thead><tr><th>Job title</th><th>Team members</th><th class="text-end">Actions</th></tr></thead><tbody>
+    @foreach (var item in Model) { <tr><td><strong class="catalog-name">@item.Title</strong></td><td><span class="soft-badge">@item.Employees.Count members</span></td><td><div class="employee-row-actions"><a asp-action="Edit" asp-route-id="@item.Id" class="row-action" aria-label="Edit @item.Title" title="Edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16.5-.8 4.3 4.3-.8L19.8 7.7a2.4 2.4 0 0 0-3.4-3.4L4 16.5Z"/><path d="m14.8 5.9 3.3 3.3"/></svg></a><a asp-action="Delete" asp-route-id="@item.Id" class="row-action row-action-delete" aria-label="Delete @item.Title" title="Delete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m3 0-.8 13H6.8L6 7m4 4v5m4-5v5"/></svg></a></div></td></tr> }
+    </tbody></table></div>
+    @if (!Model.Any()) { <div class="empty-state"><strong>No job titles yet</strong><p>Add job titles to describe roles across your organization.</p><a asp-action="Create" class="btn btn-primary">Add job title</a></div> }
+</section>

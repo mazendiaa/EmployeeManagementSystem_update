@@ -1,0 +1,11 @@
+@model IEnumerable<EmployeeManagementSystem.Models.Department>
+@{ ViewData["Title"] = "Departments"; }
+<section class="management-list">
+    <div class="employees-heading"><div><span class="eyebrow">PEOPLE DIRECTORY</span><h1>Departments</h1><p class="page-subtitle">Organize the teams that make your company.</p></div><a asp-action="Create" class="btn btn-primary create-employee-button">＋ Add department</a></div>
+    @if (TempData["Error"] is string error) { <div class="alert alert-warning">@error</div> }
+    @if (TempData["Success"] is string success) { <div class="alert alert-success">@success</div> }
+    <div class="table-responsive table-shell"><table class="table align-middle management-table"><thead><tr><th>Department</th><th>Team members</th><th class="text-end">Actions</th></tr></thead><tbody>
+    @foreach (var item in Model) { <tr><td><strong class="catalog-name">@item.Name</strong></td><td><span class="soft-badge">@item.Employees.Count members</span></td><td><div class="employee-row-actions"><a asp-action="Edit" asp-route-id="@item.Id" class="row-action" aria-label="Edit @item.Name" title="Edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16.5-.8 4.3 4.3-.8L19.8 7.7a2.4 2.4 0 0 0-3.4-3.4L4 16.5Z"/><path d="m14.8 5.9 3.3 3.3"/></svg></a><a asp-action="Delete" asp-route-id="@item.Id" class="row-action row-action-delete" aria-label="Delete @item.Name" title="Delete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m3 0-.8 13H6.8L6 7m4 4v5m4-5v5"/></svg></a></div></td></tr> }
+    </tbody></table></div>
+    @if (!Model.Any()) { <div class="empty-state"><strong>No departments yet</strong><p>Add your first department to organize your employee directory.</p><a asp-action="Create" class="btn btn-primary">Add department</a></div> }
+</section>

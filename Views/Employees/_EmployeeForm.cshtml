@@ -1,0 +1,45 @@
+@model EmployeeManagementSystem.Models.Employee
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="FullName" class="form-label"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+        <small class="field-hint">Each employee must have a unique email address.</small>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="PhoneNumber" class="form-label"></label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        <small class="field-hint">Each employee must have a unique phone number.</small>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="HireDate" class="form-label"></label>
+        <input asp-for="HireDate" class="form-control" type="date" required />
+        <span asp-validation-for="HireDate" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Salary" class="form-label"></label>
+        <input asp-for="Salary" class="form-control" required />
+        <span asp-validation-for="Salary" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="DepartmentId" class="form-label"></label>
+        <select asp-for="DepartmentId" class="form-select" asp-items="ViewBag.Departments" required>
+            <option value="">Select Department</option>
+        </select>
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="JobTitleId" class="form-label"></label>
+        <select asp-for="JobTitleId" class="form-select" asp-items="ViewBag.JobTitles" required>
+            <option value="">Select Job Title</option>
+        </select>
+        <span asp-validation-for="JobTitleId" class="text-danger"></span>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+@model List<EmployeeManagementSystem.Models.EmployeeChangeRequest>
+@using EmployeeManagementSystem.Models
+@{ ViewData["Title"] = "Profile requests"; var pendingCount = Model.Count(r => r.Status == EmployeeChangeRequestStatuses.Pending); }
+<section class="change-requests-page">
+    <div class="employees-heading"><span class="eyebrow">EMPLOYEE SELF-SERVICE</span><h1>Profile requests</h1><p class="page-subtitle">Review requested personal information and password changes before applying them.</p></div>
+    <div class="request-overview"><div><strong>@pendingCount</strong><span>Waiting for review</span></div><div><strong>@Model.Count</strong><span>Total requests</span></div></div>
+    @if (Model.Count == 0)
+    {
+        <div class="surface-card request-empty"><span>✓</span><strong>No profile requests yet</strong><p>Employee requests will appear here for your review.</p></div>
+    }
+    else
+    {
+        <div class="change-request-list">
+        @foreach (var request in Model)
+        {
+            <article class="surface-card change-request-card">
+                <div class="change-request-heading"><div class="request-employee-avatar">@request.Employee.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.FirstOrDefault()</div><div><strong>@request.Employee.FullName</strong><small>@request.Employee.Email · Requested @request.RequestedAtUtc.ToLocalTime().ToString("MMM d, yyyy · h:mm tt")</small></div><span class="request-state request-state-@request.Status.ToLowerInvariant()">@request.Status</span></div>
+                <div class="request-comparison"><div><span>FULL NAME</span><strong>@request.Employee.FullName</strong><b>→</b><strong>@request.FullName</strong></div><div><span>WORK EMAIL</span><strong>@request.Employee.Email</strong><b>→</b><strong>@request.Email</strong></div><div><span>PHONE NUMBER</span><strong>@request.Employee.PhoneNumber</strong><b>→</b><strong>@request.PhoneNumber</strong></div></div>
+                @if (!string.IsNullOrEmpty(request.ProposedPasswordHash)) { <div class="request-password-note"><span>⌑</span> Includes a password change request. The new password is securely stored and hidden from administrators.</div> }
+                @if (!string.IsNullOrWhiteSpace(request.ReviewNote)) { <p class="request-review-note">HR note: @request.ReviewNote</p> }
+                @if (request.Status == EmployeeChangeRequestStatuses.Pending)
+                {
+                    <form asp-action="Review" method="post" class="request-review-actions"><input type="hidden" name="id" value="@request.Id"/><input type="text" name="note" maxlength="400" class="form-control" placeholder="Optional note for the employee" aria-label="Optional note for the employee"/><button type="submit" name="approve" value="true" class="btn btn-primary">Approve changes</button><button type="submit" name="approve" value="false" class="btn btn-light">Decline</button></form>
+                }
+                else
+                {
+                    <div class="request-reviewed">Reviewed @request.ReviewedAtUtc?.ToLocalTime().ToString("MMM d, yyyy · h:mm tt")@(request.ReviewedBy == null ? "" : " by " + request.ReviewedBy.FullName)</div>
+                }
+            </article>
+        }
+        </div>
+    }
+</section>

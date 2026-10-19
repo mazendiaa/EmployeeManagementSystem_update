@@ -1,0 +1,7 @@
+@model EmployeeManagementSystem.Models.EmployeeAccountViewModel
+@{ ViewData["Title"] = "Create employee login"; }
+<section class="edit-page"><a asp-controller="Employees" asp-action="Index" class="back-link">← Employee directory</a><div class="edit-heading"><span class="eyebrow">WORKSPACE ACCESS</span><h1>Create an employee login</h1><p>Give a team member secure access to their own profile, attendance, and tasks.</p></div><div class="surface-card edit-card"><form asp-action="CreateEmployee" method="post"><div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+    <div class="field-group"><label asp-for="EmployeeId" class="form-label">Employee profile</label><select asp-for="EmployeeId" asp-items="ViewBag.Employees" class="form-select"><option value="">Choose an employee</option></select><span asp-validation-for="EmployeeId" class="field-error"></span><small class="field-hint">The login email will be the employee's current work email.</small></div>
+    <div class="one-time-note"><span>✦</span><p>A strong temporary password will be generated and shown to you once on the employee profile.</p></div>
+    <div class="create-actions"><a asp-controller="Employees" asp-action="Index" class="btn btn-light">Cancel</a><button type="submit" class="btn btn-primary">Create login</button></div></form></div></section>
+@section Scripts { <partial name="_ValidationScriptsPartial"/> }

@@ -1,0 +1,22 @@
+@model EmployeeManagementSystem.Models.Employee
+@using EmployeeManagementSystem.Models
+@{ ViewData["Title"] = "Employee profile"; var account = ViewBag.UserAccount as UserAccount; }
+<section class="employee-detail-page">
+    <a asp-action="Index" class="back-link">← Employee directory</a>
+    @if (ViewBag.NewTemporaryPassword is string temporaryPassword)
+    {
+        <div class="temporary-password-banner"><span class="temporary-password-icon">⌑</span><div><strong>One-time password for @ViewBag.TemporaryPasswordEmployee</strong><p>Copy and share this with the employee now. It won't be shown again, and they should change it after signing in.</p><span class="temporary-password-value"><code>@temporaryPassword</code><button type="button" class="copy-password-button" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('code').innerText);this.innerText='Copied'">Copy</button></span></div></div>
+    }
+    <div class="profile-card surface-card hr-profile-card">
+        <div class="profile-hero">@if (!string.IsNullOrWhiteSpace(Model.ProfileImagePath)) { <img src="@Model.ProfileImagePath" alt="@Model.FullName"/> } else { <span class="profile-placeholder">@Model.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.FirstOrDefault()</span> }<div class="profile-hero-copy"><span class="eyebrow">EMPLOYEE PROFILE</span><h1>@Model.FullName</h1><p>@(Model.JobTitle?.Title ?? "Pending HR assignment") <span>·</span> @(Model.Department?.Name ?? "Pending HR assignment")</p><span class="profile-status"><i></i> Active team member</span></div><div class="profile-hero-actions"><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit profile</a><a asp-controller="WorkTracking" asp-action="Index" asp-route-employeeId="@Model.Id" class="btn btn-light">Attendance & tasks</a></div></div>
+        <div class="profile-details"><div><span>WORK EMAIL</span><strong>@Model.Email</strong></div><div><span>PHONE</span><strong>@Model.PhoneNumber</strong></div><div><span>DEPARTMENT</span><strong>@(Model.Department?.Name ?? "Pending HR assignment")</strong></div><div><span>JOB TITLE</span><strong>@(Model.JobTitle?.Title ?? "Pending HR assignment")</strong></div><div><span>DATE JOINED</span><strong>@(Model.HireDate?.ToString("MMMM d, yyyy") ?? "Pending HR assignment")</strong></div><div><span>MONTHLY SALARY</span><strong>@(Model.Salary?.ToString("C") ?? "Pending HR assignment")</strong></div></div>
+    </div>
+    <div class="employee-admin-grid">
+        <section class="surface-card access-card"><div class="card-heading"><div><h2>Employee sign-in</h2><p>Login details and access management</p></div><span class="role-pill @(account == null ? "role-pill-employee" : "role-pill-hr")">@(account == null ? "Not set up" : "Active")</span></div>
+            @if (account == null) { <p class="access-explainer">This employee doesn't have a PeopleDesk login yet.</p><a asp-controller="Account" asp-action="CreateEmployee" asp-route-employeeId="@Model.Id" class="btn btn-primary">Create employee login</a> }
+            else { <div class="access-email"><span class="access-email-icon">✉</span><span><small>LOGIN EMAIL</small><strong>@account.Email</strong></span></div><p class="access-explainer">Password values are never displayed. Generate a temporary password if they need access restored.</p><a asp-controller="Account" asp-action="ResetEmployeePassword" asp-route-id="@Model.Id" class="btn btn-light">Reset employee password</a> }
+        </section>
+        <section class="surface-card work-summary-card"><div class="card-heading"><div><h2>Work record</h2><p>Attendance and assigned tasks</p></div></div><div class="mini-metrics"><div><strong>@ViewBag.AttendanceCount</strong><span>Attendance days</span></div><div><strong>@ViewBag.TaskCount</strong><span>Assigned tasks</span></div></div><a asp-controller="WorkTracking" asp-action="Index" asp-route-employeeId="@Model.Id" class="text-link">Open work record <span>→</span></a></section>
+    </div>
+    <div class="employee-delete-row"><span>Leaving the organization?</span><a asp-action="Delete" asp-route-id="@Model.Id">Remove employee and all linked records</a></div>
+</section>

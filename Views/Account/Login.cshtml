@@ -1,0 +1,18 @@
+@model EmployeeManagementSystem.Models.LoginViewModel
+@{ ViewData["Title"] = "Sign in"; }
+<div class="auth-layout">
+    <section class="auth-story"><a class="brand auth-brand" asp-controller="Account" asp-action="Login"><img class="brand-logo-mark" src="~/images/peopledesk-mark.png" alt="PeopleDesk logo"/><span class="brand-copy"><strong>people<span>desk</span></strong><small>PEOPLE OPERATIONS</small></span></a><div class="auth-story-copy"><span class="eyebrow">A CALMER WAY TO WORK</span><h1>Good people.<br/>Better workdays.</h1><p>Your people hub, thoughtfully organized so you can focus on what matters.</p><div class="auth-illustration"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><span class="illustration-person person-a">A</span><span class="illustration-person person-b">M</span><span class="illustration-person person-c">N</span><img class="illustration-center" src="~/images/peopledesk-mark.png" alt=""/></div><div class="auth-quote"><span>“</span><p>Great teams grow when people feel supported.</p></div></div><div class="auth-story-foot">PEOPLE FIRST, EVERY DAY</div></section>
+    <section class="auth-panel"><div class="auth-form-wrap"><div class="auth-mobile-brand"><img class="brand-logo-mark" src="~/images/peopledesk-mark.png" alt=""/><strong>people<span>desk</span></strong></div><span class="eyebrow">WELCOME BACK</span><h2>Sign in to your workspace</h2><p class="auth-subtitle">Choose your workspace to continue.</p>
+        <div class="role-switch"><a asp-action="Login" asp-route-role="HR" class="@(Model.Role == "HR" ? "selected" : "")"><span class="role-avatar role-hr">HR</span><span><strong>HR team</strong><small>Manage your people</small></span></a><a asp-action="Login" asp-route-role="Employee" class="@(Model.Role == "Employee" ? "selected" : "")"><span class="role-avatar role-employee">ME</span><span><strong>Employee</strong><small>Open my workspace</small></span></a></div>
+        <form asp-action="Login" method="post" class="auth-form">
+            <input asp-for="Role" type="hidden"/><input name="returnUrl" type="hidden" value="@ViewBag.ReturnUrl"/>
+            <div asp-validation-summary="ModelOnly" class="auth-validation"></div>
+            <div class="field-group"><label asp-for="Email" class="form-label"></label><div class="auth-input-wrap"><span>✉</span><input asp-for="Email" class="form-control" placeholder="you@company.com" autocomplete="username"/></div><span asp-validation-for="Email" class="field-error"></span></div>
+            <div class="field-group"><div class="password-label"><label asp-for="Password" class="form-label"></label><a asp-action="ForgotPassword" class="muted-link">Forgot password?</a></div><div class="auth-input-wrap"><span>⌑</span><input asp-for="Password" class="form-control" placeholder="Enter your password" autocomplete="current-password"/><button class="password-toggle" type="button" onclick="const p=this.previousElementSibling;p.type=p.type==='password'?'text':'password'" aria-label="Show password">◉</button></div><span asp-validation-for="Password" class="field-error"></span></div>
+            <label class="remember-row"><input asp-for="RememberMe"/><span>Keep me signed in</span></label>
+            <button type="submit" class="btn btn-primary auth-submit">Sign in <span>→</span></button>
+        </form>
+        <div class="setup-prompt"><span>New employee?</span><a asp-action="Register">Create an employee account →</a></div>
+        <div class="auth-secure"><span>◈</span> Your workspace is private and secure</div>
+    </div><div class="auth-panel-foot">© @DateTime.Today.Year PeopleDesk <span>·</span> Made for better workdays</div></section>
+</div>

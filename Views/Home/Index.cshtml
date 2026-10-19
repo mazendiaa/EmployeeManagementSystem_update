@@ -1,0 +1,51 @@
+@using EmployeeManagementSystem.Models
+@{
+    ViewData["Title"] = "Overview";
+    var newestEmployees = ViewBag.NewestEmployees as List<Employee> ?? new();
+}
+
+<section class="dashboard-page">
+    <div class="welcome-row">
+        <div><span class="eyebrow">@DateTime.Today.ToString("dddd, MMMM d, yyyy").ToUpperInvariant()</span><h1>A better day starts with your people.</h1><p>Here's what's happening across your workspace.</p></div>
+        <a asp-controller="Employees" asp-action="Create" class="btn btn-primary welcome-action"><span>＋</span> Add employee</a>
+    </div>
+
+    <div class="dashboard-stats">
+        <article class="stat-card stat-people"><div class="stat-top"><span class="stat-icon">♙</span><span class="stat-caption">TEAM SIZE</span></div><strong>@ViewBag.EmployeeCount</strong><span class="stat-foot">People in your directory</span><a asp-controller="Employees" asp-action="Index" class="stat-link">View employees <span>→</span></a></article>
+        <article class="stat-card stat-departments"><div class="stat-top"><span class="stat-icon">▦</span><span class="stat-caption">DEPARTMENTS</span></div><strong>@ViewBag.DepartmentCount</strong><span class="stat-foot">Across your organization</span><a asp-controller="Departments" asp-action="Index" class="stat-link">Explore departments <span>→</span></a></article>
+        <article class="stat-card stat-roles"><div class="stat-top"><span class="stat-icon">▤</span><span class="stat-caption">JOB TITLES</span></div><strong>@ViewBag.JobTitleCount</strong><span class="stat-foot">Roles in your catalog</span><a asp-controller="JobTitles" asp-action="Index" class="stat-link">Manage job titles <span>→</span></a></article>
+    </div>
+
+    <div class="dashboard-grid">
+        <section class="surface-card recent-card">
+            <div class="card-heading"><div><h2>Your people</h2><p>Recently added to the directory</p></div><a asp-controller="Employees" asp-action="Index" class="text-link">View all <span>→</span></a></div>
+            @if (newestEmployees.Count == 0)
+            {
+                <div class="empty-state"><span class="empty-icon">♙</span><strong>Your team starts here</strong><p>Add your first employee to get your people directory up and running.</p><a asp-controller="Employees" asp-action="Create" class="btn btn-primary">Add an employee</a></div>
+            }
+            else
+            {
+                <div class="recent-list">
+                    @foreach (var employee in newestEmployees)
+                    {
+                        <a class="recent-person" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">
+                            @if (!string.IsNullOrWhiteSpace(employee.ProfileImagePath)) { <img src="@employee.ProfileImagePath" alt="" /> }
+                            else { <span class="person-initials">@string.Join("", employee.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(x => x[0]))</span> }
+                            <span class="person-info"><strong>@employee.FullName</strong><small>@employee.JobTitle?.Title</small></span>
+                            <span class="person-department">@employee.Department?.Name</span><span class="person-arrow">→</span>
+                        </a>
+                    }
+                </div>
+            }
+        </section>
+        <aside class="surface-card quick-card">
+            <div class="card-heading"><div><h2>Quick actions</h2><p>Common things to get done</p></div></div>
+            <a class="quick-action" asp-controller="Employees" asp-action="Create"><span class="quick-icon quick-icon-mint">＋</span><span><strong>Add a teammate</strong><small>Create an employee profile</small></span><b>→</b></a>
+            <a class="quick-action" asp-controller="Departments" asp-action="Index"><span class="quick-icon quick-icon-lilac">▦</span><span><strong>Organize departments</strong><small>Keep your teams up to date</small></span><b>→</b></a>
+            <a class="quick-action" asp-controller="JobTitles" asp-action="Index"><span class="quick-icon quick-icon-peach">▤</span><span><strong>Update job titles</strong><small>Manage roles and positions</small></span><b>→</b></a>
+            <a class="quick-action" asp-controller="WorkTracking" asp-action="Index"><span class="quick-icon quick-icon-lilac">◷</span><span><strong>Review attendance & tasks</strong><small>See monthly team progress</small></span><b>→</b></a>
+            <a class="quick-action" asp-controller="EmployeeChangeRequests" asp-action="Index"><span class="quick-icon quick-icon-peach">✓</span><span><strong>Profile requests</strong><small>@ViewBag.PendingProfileRequests waiting for approval</small></span><b>→</b></a>
+            <div class="calm-note"><span>✦</span><p>A tidy people directory makes everyday work a little easier.</p></div>
+        </aside>
+    </div>
+</section>

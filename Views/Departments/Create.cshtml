@@ -1,0 +1,4 @@
+@model EmployeeManagementSystem.Models.Department
+@{ ViewData["Title"] = "Add department"; }
+<section class="edit-page"><a asp-action="Index" class="back-link">← All departments</a><div class="edit-heading"><span class="eyebrow">PEOPLE DIRECTORY</span><h1>Add a department</h1><p>Create a team to keep your employee directory organized.</p></div><div class="surface-card edit-card"><form asp-action="Create" method="post"><partial name="_Form" model="Model"/><div class="create-actions"><a asp-action="Index" class="btn btn-light">Cancel</a><button type="submit" class="btn btn-primary">Create department</button></div></form></div></section>
+@section Scripts { <partial name="_ValidationScriptsPartial"/> }

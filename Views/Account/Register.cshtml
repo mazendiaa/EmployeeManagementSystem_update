@@ -1,0 +1,60 @@
+@model EmployeeManagementSystem.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Create employee account";
+}
+
+<div class="auth-layout">
+    <section class="auth-story">
+        <a class="brand auth-brand" asp-controller="Account" asp-action="Login">
+            <img class="brand-logo-mark" src="~/images/peopledesk-mark.png" alt="PeopleDesk logo" />
+            <span class="brand-copy"><strong>people<span>desk</span></strong><small>PEOPLE OPERATIONS</small></span>
+        </a>
+        <div class="auth-story-copy">
+            <span class="eyebrow">JOIN YOUR WORKSPACE</span>
+            <h1>Your workday,<br />in one place.</h1>
+            <p>Create your employee account to access your personal workspace.</p>
+        </div>
+        <div class="auth-story-foot">PEOPLE FIRST, EVERY DAY</div>
+    </section>
+    <section class="auth-panel">
+        <div class="auth-form-wrap">
+            <div class="auth-mobile-brand"><img class="brand-logo-mark" src="~/images/peopledesk-mark.png" alt="" /><strong>people<span>desk</span></strong></div>
+            <a asp-action="Login" asp-route-role="Employee" class="back-link">← Back to sign in</a>
+            <span class="eyebrow">EMPLOYEE REGISTRATION</span>
+            <h2>Create your account</h2>
+            <p class="auth-subtitle">Your HR team will complete your employment details after registration.</p>
+            <form asp-action="Register" method="post" class="auth-form">
+                <div asp-validation-summary="ModelOnly" class="auth-validation"></div>
+                <div class="field-group">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" autocomplete="name" />
+                    <span asp-validation-for="FullName" class="field-error"></span>
+                </div>
+                <div class="field-group">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" autocomplete="email" />
+                    <span asp-validation-for="Email" class="field-error"></span>
+                </div>
+                <div class="field-group">
+                    <label asp-for="PhoneNumber" class="form-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" autocomplete="tel" />
+                    <span asp-validation-for="PhoneNumber" class="field-error"></span>
+                </div>
+                <div class="field-group">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                    <span asp-validation-for="Password" class="field-error"></span>
+                </div>
+                <div class="field-group">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+                </div>
+                <button type="submit" class="btn btn-primary auth-submit">Create account <span>→</span></button>
+            </form>
+            <div class="auth-secure"><span>◈</span> Passwords are securely hashed before storage</div>
+        </div>
+        <div class="auth-panel-foot"><a asp-action="Login">← Back to sign in</a></div>
+    </section>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial"/> }

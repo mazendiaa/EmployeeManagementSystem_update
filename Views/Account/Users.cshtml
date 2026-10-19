@@ -1,0 +1,11 @@
+@model IEnumerable<EmployeeManagementSystem.Models.UserAccount>
+@using EmployeeManagementSystem.Models
+@{ ViewData["Title"] = "User accounts"; }
+<section class="management-list">
+    <div class="employees-heading"><div><span class="eyebrow">WORKSPACE ACCESS</span><h1>User accounts</h1><p class="page-subtitle">Create and manage secure employee sign-ins.</p></div><a asp-action="CreateEmployee" class="btn btn-primary create-employee-button">＋ Add employee login</a></div>
+    @if (TempData["Success"] is string success) { <div class="alert alert-success">@success</div> }
+    <div class="account-summary"><span class="account-summary-icon">♧</span><div><strong>@Model.Count() people can access PeopleDesk</strong><p>HR administrators manage the workspace. Employees only see their own profile.</p></div></div>
+    <div class="table-responsive table-shell"><table class="table align-middle management-table"><thead><tr><th>Account</th><th>Access</th><th>Employee profile</th><th>Created</th></tr></thead><tbody>
+    @foreach (var account in Model) { <tr><td><div class="account-cell"><span class="person-initials">@account.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.FirstOrDefault()</span><span><strong>@account.FullName</strong><small>@account.Email</small></span></div></td><td><span class="role-pill @(account.Role == AccountRoles.Hr ? "role-pill-hr" : "role-pill-employee")">@(account.Role == AccountRoles.Hr ? "HR administrator" : "Employee")</span></td><td>@(account.Employee?.FullName ?? (account.Role == AccountRoles.Hr ? "—" : "Not linked"))</td><td>@account.CreatedAtUtc.ToLocalTime().ToString("MMM d, yyyy")</td></tr> }
+    </tbody></table></div>
+</section>

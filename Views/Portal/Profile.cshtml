@@ -1,0 +1,50 @@
+@model EmployeeManagementSystem.Models.EmployeeSelfProfileViewModel
+@using EmployeeManagementSystem.Models
+@{ ViewData["Title"] = "My profile"; }
+<section class="edit-page employee-self-profile">
+    <a asp-controller="Portal" asp-action="Index" class="back-link">← My workspace</a>
+    <div class="edit-heading"><span class="eyebrow">YOUR INFORMATION</span><h1>My profile</h1><p>Request personal information or password changes. HR reviews every request before it takes effect.</p></div>
+    @if (Model.MustChangePassword) { <div class="request-pending-banner"><span class="request-status-dot"></span><div><strong>You signed in with a temporary password.</strong><p>Set your new password in the request below. HR will review it before it becomes active; you don't need to enter the temporary password again.</p></div></div> }
+    <div class="surface-card self-profile-card">
+        <div class="self-profile-hero">
+            @if (!string.IsNullOrWhiteSpace(Model.Employee.ProfileImagePath)) { <img src="@Model.Employee.ProfileImagePath" alt="@Model.Employee.FullName"/> }
+            else { <span class="profile-placeholder">@Model.Employee.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.FirstOrDefault()</span> }
+            <div><h2>@Model.Employee.FullName</h2><p>@(Model.Employee.JobTitle?.Title ?? "Pending HR assignment") <span>·</span> @(Model.Employee.Department?.Name ?? "Pending HR assignment")</p></div>
+        </div>
+        <div class="profile-details">
+            <div><span>WORK EMAIL</span><strong>@Model.Employee.Email</strong></div><div><span>PHONE</span><strong>@(string.IsNullOrWhiteSpace(Model.Employee.PhoneNumber) ? "Not provided" : Model.Employee.PhoneNumber)</strong></div>
+            <div><span>DEPARTMENT</span><strong>@(Model.Employee.Department?.Name ?? "Pending HR assignment")</strong></div><div><span>JOB TITLE</span><strong>@(Model.Employee.JobTitle?.Title ?? "Pending HR assignment")</strong></div>
+            <div><span>DATE JOINED</span><strong>@(Model.Employee.HireDate?.ToString("MMMM d, yyyy") ?? "Pending HR assignment")</strong></div><div><span>MONTHLY SALARY</span><strong>@(Model.Employee.Salary?.ToString("C") ?? "Pending HR assignment")</strong></div>
+        </div>
+    </div>
+
+    @if (Model.PendingRequest != null)
+    {
+        <div class="request-pending-banner"><span class="request-status-dot"></span><div><strong>Your request is waiting for HR approval.</strong><p>Submitted @Model.PendingRequest.RequestedAtUtc.ToLocalTime().ToString("MMM d, yyyy · h:mm tt"). Any requested changes will take effect after approval.</p>@if (!string.IsNullOrEmpty(Model.PendingRequest.ProposedPasswordHash)) { <small>A password change is included in this request.</small> }</div></div>
+    }
+    else
+    {
+        <section class="surface-card profile-request-card">
+            <div class="card-heading"><div><h2>Request a change</h2><p>Name, work email, phone, or password changes need HR approval.</p></div></div>
+            <form asp-action="RequestProfileChanges" method="post" class="profile-request-form">
+                <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+                <div class="profile-request-fields"><div class="field-group"><label asp-for="Request.FullName" class="form-label"></label><input asp-for="Request.FullName" class="form-control"/><span asp-validation-for="Request.FullName" class="field-error"></span></div>
+                <div class="field-group"><label asp-for="Request.Email" class="form-label"></label><input asp-for="Request.Email" class="form-control"/><span asp-validation-for="Request.Email" class="field-error"></span></div>
+                <div class="field-group"><label asp-for="Request.PhoneNumber" class="form-label"></label><input asp-for="Request.PhoneNumber" class="form-control"/><span asp-validation-for="Request.PhoneNumber" class="field-error"></span></div></div>
+                <div class="profile-request-password"><strong>@(Model.MustChangePassword ? "Create a new password" : "Change password") <small>@(Model.MustChangePassword ? "Required to replace your temporary password." : "Leave blank to keep your current password.")</small></strong><div class="profile-request-fields"><div class="field-group"><label asp-for="Request.NewPassword" class="form-label"></label><input asp-for="Request.NewPassword" class="form-control" autocomplete="new-password" placeholder="At least 10 characters"/><span asp-validation-for="Request.NewPassword" class="field-error"></span></div><div class="field-group"><label asp-for="Request.ConfirmPassword" class="form-label"></label><input asp-for="Request.ConfirmPassword" class="form-control" autocomplete="new-password"/><span asp-validation-for="Request.ConfirmPassword" class="field-error"></span></div></div></div>
+                <button type="submit" class="btn btn-primary">Send request to HR <span aria-hidden="true">→</span></button>
+            </form>
+        </section>
+    }
+
+    @if (Model.RecentRequests.Count > 0)
+    {
+        <section class="surface-card request-history-card"><div class="card-heading"><div><h2>Recent requests</h2><p>Updates on your change requests</p></div></div><div class="request-history-list">
+            @foreach (var request in Model.RecentRequests)
+            {
+                <article class="request-history-row"><div><strong>@request.RequestedAtUtc.ToLocalTime().ToString("MMM d, yyyy")</strong><small>@request.FullName · @request.Email · @request.PhoneNumber@(string.IsNullOrEmpty(request.ProposedPasswordHash) ? "" : " · Password change")</small>@if (!string.IsNullOrWhiteSpace(request.ReviewNote)) { <small class="request-review-note">HR note: @request.ReviewNote</small> }</div><span class="request-state request-state-@request.Status.ToLowerInvariant()">@request.Status</span></article>
+            }
+        </div></section>
+    }
+</section>
+@section Scripts { <partial name="_ValidationScriptsPartial"/> }

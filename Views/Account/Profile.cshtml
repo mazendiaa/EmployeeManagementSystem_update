@@ -1,0 +1,13 @@
+@{ ViewData["Title"] = "My profile"; }
+<section class="edit-page account-profile-page">
+    <div class="edit-heading"><span class="eyebrow">YOUR ACCOUNT</span><h1>My profile</h1><p>Your PeopleDesk sign-in information.</p></div>
+    <div class="surface-card account-profile-card">
+        <div class="account-profile-avatar">@((User.Identity?.Name ?? "P").Split(' ').FirstOrDefault()?.FirstOrDefault())</div>
+        <div class="account-profile-details">
+            <div><span>FULL NAME</span><strong>@User.Identity?.Name</strong></div>
+            <div><span>EMAIL ADDRESS</span><strong>@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</strong></div>
+            <div><span>ACCESS</span><strong>HR administrator</strong></div>
+        </div>
+        <a asp-action="ChangePassword" class="btn btn-light">Change password <span aria-hidden="true">→</span></a>
+    </div>
+</section>
